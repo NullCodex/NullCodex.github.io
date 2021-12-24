@@ -1,79 +1,56 @@
+const timer = document.getElementById('stopwatch');
 
-(function ($) {
-    "use strict";
+var hr = 0;
+var min = 0;
+var sec = 0;
+var stoptime = true;
 
-    /*==================================================================
-    [ Validate ]*/
-    var input = $('.validate-input .input100');
+function startTimer() {
+  if (stoptime == true) {
+        stoptime = false;
+        timerCycle();
+    }
+}
+function stopTimer() {
+  if (stoptime == false) {
+    stoptime = true;
+  }
+}
 
-    $('.validate-form').on('submit',function(){
-        var check = true;
+function timerCycle() {
+    if (stoptime == false) {
+    sec = parseInt(sec);
+    min = parseInt(min);
+    hr = parseInt(hr);
 
-        for(var i=0; i<input.length; i++) {
-            if(validate(input[i]) == false){
-                showValidate(input[i]);
-                check=false;
-            }
-        }
+    sec = sec + 1;
 
-        return check;
-    });
-
-
-    $('.validate-form .input100').each(function(){
-        $(this).focus(function(){
-           hideValidate(this);
-        });
-    });
-
-    function validate (input) {
-        if($(input).attr('type') == 'email' || $(input).attr('name') == 'email') {
-            if($(input).val().trim().match(/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/) == null) {
-                return false;
-            }
-        }
-        else {
-            if($(input).val().trim() == ''){
-                return false;
-            }
-        }
+    if (sec == 60) {
+      min = min + 1;
+      sec = 0;
+    }
+    if (min == 60) {
+      hr = hr + 1;
+      min = 0;
+      sec = 0;
     }
 
-    function showValidate(input) {
-        var thisAlert = $(input).parent();
-
-        $(thisAlert).addClass('alert-validate');
+    if (sec < 10 || sec == 0) {
+      sec = '0' + sec;
+    }
+    if (min < 10 || min == 0) {
+      min = '0' + min;
+    }
+    if (hr < 10 || hr == 0) {
+      hr = '0' + hr;
     }
 
-    function hideValidate(input) {
-        var thisAlert = $(input).parent();
+    timer.innerHTML = hr + ':' + min + ':' + sec;
 
-        $(thisAlert).removeClass('alert-validate');
-    }
+    setTimeout("timerCycle()", 1000);
+  }
+}
 
-    
-    
-    /*==================================================================
-    [ Simple slide100 ]*/
-
-    $('.simpleslide100').each(function(){
-        var delay = 7000;
-        var speed = 1000;
-        var itemSlide = $(this).find('.simpleslide100-item');
-        var nowSlide = 0;
-
-        $(itemSlide).hide();
-        $(itemSlide[nowSlide]).show();
-        nowSlide++;
-        if(nowSlide >= itemSlide.length) {nowSlide = 0;}
-
-        setInterval(function(){
-            $(itemSlide).fadeOut(speed);
-            $(itemSlide[nowSlide]).fadeIn(speed);
-            nowSlide++;
-            if(nowSlide >= itemSlide.length) {nowSlide = 0;}
-        },delay);
-    });
-
-
-})(jQuery);
+function resetTimer() {
+    timer.innerHTML = '00:00:00';
+}
